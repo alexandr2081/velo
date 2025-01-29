@@ -1,0 +1,16 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<form method="post" enctype='multipart/form-data'>
+  <div class="alert alert-info col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+    <h4 class="alert-heading">Сохранить характеристики с сервера (в папку загрузки)</h4>
+    <button type="submit" value="down_chars" name="down_chars" class="btn btn-warning">Характеристики (chars)</button>
+    <hr><h4 class="alert-heading">Сохранить характеристики по типам с сервера (в папку загрузки)</h4>
+    <button type="submit" value="down_types" name="down_types" class="btn btn-warning">Типовые характеристики (types)</button>
+    <hr><h4 class="alert-heading">Выгрузка характеристик с компьютера</h4>
+    <input type="file" name="up_chars" enctype="multipart/form-data" class="btn btn-success">
+    <hr><h4 class="alert-heading">Выгрузка типовых характеристик с компьютера</h4>
+    <input type="file" name="up_types" enctype="multipart/form-data" class="btn btn-success">
+    <hr><input type="submit" name="up" value="              Выгрузка              " class="btn btn-warning btn-lg">
+  </div>
+</form>
+{% endblock %}

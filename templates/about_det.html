@@ -1,0 +1,16 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<div class="alert alert-primary col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+    <h4 class="alert-heading">{{ det['name'] }}</h4>
+    <p class="mb-0">{{det['descript']}} </p>
+    <hr><p class="mb-0">Цена: {{det['price']}}, {{det['weight']}}</p>
+    <hr><p class="mb-0">Производитель: {{det['manufacture']}}<br>
+      Его описание: {{chars['manufacture'][det['manufacture']]}}</p>
+    <hr><p class="mb-0">Материал: {{det['material']}}<br>
+      Его описание: {{chars['material'][det['material']]}}</p>
+    <hr><p class="mb-0">Уровень: {{det['level']}}<br>
+      Его описание: {{chars['level'][det['level']]}}</p>
+    <hr><p class="mb-0">Цвет: {{det['color']}}</p>
+    <hr><p class="mb-0">Характеристики по типу {{det['type']}}:<br>{{det['param']}}</p>
+  </div>
+{% endblock %}

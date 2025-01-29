@@ -1,0 +1,143 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<form class="row g-3 needs-validation" method="POST" novalidate>
+  <div class="col-md-4">
+    <label class="form-label">Название</label>
+    <input type="text" class="form-control" name="name" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Тип</label>
+    <select class="form-select" onchange="func(value)" name="type" required>
+      <option selected disabled value="">Выберите тип</option>
+      {% for type in types %}
+        <option value="{{type}}">{{type}}</option>
+      {% endfor %}
+    </select>
+    <div class="invalid-feedback">Выберите тип детали</div>
+  </div>
+  {% for detail in types %}
+    {% for char in types[detail].keys() %}
+      <div class="col-md-3 hide {{detail}}">
+        {% if types[detail][char] != 'int' %}
+          <label class="form-label">{{char}}</label>
+          <select class="form-select hide {{detail}}" name="{{char}}">
+            <option selected disabled value="">Выбрерите характеристику</option>
+            {% for ch in types[detail][char] %}
+              <option value='{{ch}}'>{{ch}}</option>
+            {% endfor %}
+          </select>
+        {% else %}
+          <label class="form-label">{{char}}</label>
+          <input type="text" class="form-control hide {{detail}}" name="{{char}}">
+        {% endif %}
+        <div class="invalid-feedback">Выберите тип детали</div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+  <div class="col-md-12"></div>
+  <div class="col-md-3">
+    <label class="form-label">Цвет</label>
+    {% for color in chars['color'] %}
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="color" value="{{ color }}" required>
+        <label class="form-check-label">{{ color }}</label>
+      </div>
+    {% endfor %}
+    <div class="invalid-feedback">Выбери цвет (-а)</div>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Материал</label>
+    {% for material in chars['material'].keys() %}
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="material" value="{{ material }}" required>
+        <label class="form-check-label">{{material}}</label>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Производитель</label>
+    {% for manufacture in chars['manufacture'].keys() %}
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="manufacture" value="{{ manufacture }}" required>
+        <label class="form-check-label">{{manufacture}}</label>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Уровень</label>
+    {% for level in chars['level'].keys() %}
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="level" value="{{ level }}" required>
+        <label class="form-check-label">{{level}}</label>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Описание</label>
+    <textarea class="form-control" placeholder="Описание детали" name="descript" rows="5" required></textarea>
+    <div class="invalid-feedback">Введите описание детали</div>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Изображение детали</label>
+    <input type="text" class="form-control" name="img" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+    <label class="form-label">Картинка наложения</label>
+    <input type="text" class="form-control" name="img_velo" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+  </div>
+  <div class="col-md-4 form-check">
+    <label class="form-label">Цена</label>
+    <input type="text" class="form-control" name="price" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Вес</label>
+    <input type="text" class="form-control" name="weight" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Доступность</label>
+    <input type="text" class="form-control" name="available" required>
+    <div class="valid-feedback">Выглядит неплохо</div>
+  </div>
+  {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Чтож ты так!</strong>{{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+  <div class="col-12">
+    <button class="btn btn-primary" type="submit">Создать деталь</button>
+  </div>
+</form>
+  <script>
+      (() => {
+        'use strict'
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+      
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+          form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {event.preventDefault(), event.stopPropagation()}
+            form.classList.add('was-validated')}, false)})})()
+          
+          
+        function func(c) {let x, i;
+          x = document.getElementsByClassName("hide");
+          for (i = 0; i < x.length; i++) {
+              x[i].required = false;
+              RemoveClass(x[i], "show");
+              if (x[i].className.indexOf(c) > -1) {AddClass(x[i]);
+              x[i].required = true;}}}
+      
+        function AddClass(element) {let i;
+            if (element.className.split(" ").indexOf("show") == -1) {element.className += " " + "show"}}
+        
+        function RemoveClass(element, name) {let i, arr1;
+            arr1 = element.className.split(" ");
+            while (arr1.indexOf("show") > -1) {arr1.splice(arr1.indexOf("show"), 1);}
+            element.className = arr1.join(" ");}
+  </script>
+{% endblock %}
