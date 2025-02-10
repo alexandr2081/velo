@@ -1,0 +1,13 @@
+{% extends "skeleton.html" %}
+{% block content %}
+{% for build in builds %}
+  <div class="alert alert-primary col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+    <h4 class="alert-heading">{{build['name']}}</h4>
+    {% for type in build['details'].keys() %}
+      <p>{{type}}: {{build['details'][type]}}</p>
+    {% endfor %}
+    <hr><p class="mb-0">Цена: {{build['price']}} руб, Вес: {{build['weight']}}</p>
+    <hr><a href="/index/{{build['details']}}" class="alert-link">Скопировать сборку и открыть её в главном меню</a>
+  </div>
+{% endfor %}
+{% endblock %}

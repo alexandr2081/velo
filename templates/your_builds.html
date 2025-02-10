@@ -1,0 +1,35 @@
+{% extends "skeleton.html" %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-danger col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+        <h4 class="alert-heading">{{ message }}</h4>
+      </div>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+<form method="post" enctype='multipart/form-data'>
+    <div class="alert alert-info col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+      <h4 class="alert-heading">Загрузить сборку с компьютера</h4><hr>
+      <input type="file" id="file" name="file" enctype="multipart/form-data" class="btn btn-success">
+      <input type="submit" name="subm" value="Загрузить" class="btn btn-warning">
+    </div>
+    {% for build in builds %}
+    <div class="alert alert-success col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+        {% if 'admin' in current_user.name %}
+        <h4 class="alert-heading">Название сборки: {{build['name']}}, id сборки {{build['id']}}</h4>
+        {% else %}
+        <h4 class="alert-heading">Название сборки: {{build['name']}}</h4>
+        {% endif %}
+        {% for type in build['details'].keys() %}
+        <p>{{type}}: {{build['details'][type]}}</p>
+        {% endfor %}
+        <hr><p class="mb-0">Цена: {{build['price']}} руб, Вес: {{build['weight']}}</p>
+        <hr><button type="submit" value="{{build['id']}}" name="down_id" class="btn btn-warning">Сохранить сборку (в папку загрузки)</button>
+        <hr><button type="submit" value="{{build['id']}}" name="del_id" class="btn btn-warning">Удалить сборку</button>
+    </div>
+    <br>
+    {% endfor %}
+</form>
+{% endblock %}

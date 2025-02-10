@@ -1,0 +1,219 @@
+{% extends "skeleton.html" %}
+{% block content %}
+  {% if build_.get('imgs') %}
+    {% for img in build_['imgs'] %}
+      <img src="{{ img }}" style="position: absolute; z-index: 20; width: 100%;">
+    {% endfor %}
+    <div style="height: 20%;"></div>
+  {% endif %}
+  <img src="./stat/back_abs.webp">
+  <img src=".\stat\back_abs.webp">
+  <img src="stat\back_abs.webp">
+  {% if message %}
+  <div class="alert alert-danger col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+    <h4 class="alert-heading">{{ message }}</h4>
+  </div>
+  {% endif %}
+  <form method="post">
+    <input id="stop" style="display: none;" required>
+    <div class="alert alert-primary col-md-10 offset-md-1" style="margin-top: 10px;" role="alert">
+      <h4 class="alert-heading">{{build_['name']}}</h4>
+      {% for type in build_['details'].keys() %}
+        <p>{{type}}: {{build_['details'][type]}}</p>
+      {% endfor %}
+      <hr>
+      <p class="mb-0">Цена: {{build_['price']}} руб, Вес: {{build_['weight']}}</p>
+    </div>
+
+    <div class="d-grid gap-2 col-10 mx-auto">
+      <button class="btn btn-primary btn-lg" type="submit" name="build_sub" value="update_img"
+              onclick="document.getElementById('build_name').required = false; 
+              document.getElementById('stop').required = false">Обновить сборку</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="togglePopup('popupOverlay')">Создать сборку</button>
+        <div id="popupOverlay" class="overlay-container">
+          <div class="popup-box">
+            <h2 style="color: green;">Создание</h2>
+            <div class="form-container">
+                <label class="form-label" for="name">Введите уникальное название сборки</label>
+                <input class="form-input" type="text" placeholder="Введите уникальное название сборки"
+                       id="build_name" name="build_name" value="{{build_['name']}}" required>
+                {% if current_user.is_authenticated and 'admin' in current_user.name %}
+                  <div>
+                    <input class="form-check-input" type="checkbox" name="is_open" value="True">
+                    <label class="form-check-label">Сделать сборку общей?</label>
+                  </div>
+                {% endif %}
+                <button class="btn-submit" type="submit" name="build_sub" value="new_build"
+                        onclick="document.getElementById('stop').required = false">Применить</button>
+            </div>
+            <button class="btn-close-popup" onclick="togglePopup('popupOverlay')">Закрыть</button>
+          </div>
+      <input id="output" type="text" name="output" value="{{build_['detid']}}" style="display: none;">
+    </div>
+  </form>
+  <div class="col-md-10 offset-md-1">
+    <input class="form-control" list="dataName" placeholder="Начните вводить название детали" id="name" onchange="func_card('name', 'char')">
+      <datalist id="dataName">
+        {% for dict in details %}
+          <option value="{{dict['name']}}">
+        {% endfor %}
+      </datalist>
+  </div>
+  <div class="row row-cols-4 row-cols-md-4 g-4 scroll_cards">
+    <input id="filters" type="text" name="filters" value="{{filters}}" style="display: none;">
+    <div class="card text-center text-bg-danger mb-3 card_hidden" style="max-width: 18rem;" id="no_details">
+      <div class="card-header">Проблема</div>
+      <div class="card-body">
+        <h5 class="card-title">Отсутствуют детали</h5>
+        <p class="card-text">Попробуйте убрать и/или изменить некоторые фильтры</p>
+      </div>
+    </div>
+
+    {% for dict in details %}
+      <div class="col card card_hide" style="width: 18rem;" id="mydiv" value="">
+      <script>document.getElementById('mydiv').value = "{{dict}}"</script>
+          {% if current_user.is_authenticated %}
+            <a href="about_det/{{dict['name']}}"><img src="{{ dict['img'] }}" class="card-img-top" alt="Что-то пошло не так"></a>
+          {% else %}
+            <img src="{{ dict['img'] }}" class="card-img-top" alt="Что-то пошло не так">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{dict['name']}}</h5>
+            <p class="card-text">Цена: {{dict['price']}}</p>
+            <div class="card-body"><p class="card-text">{{dict['descript']}}</p></div>
+              {% for id, type in [[dict['id'], dict['type']]] %}
+                <a onclick="document.getElementById('output').value += ' ' + '{{id}}'" class="btn btn-primary">Добавить деталь в сборку</a>
+              {% endfor %}
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="container text-center">
+    <div class="row row">
+      <div class="col-md-4">
+        <select class="form-select" id="type" onchange="func(value)">
+          <option selected disabled value="">Выберите тип</option>
+          <option value="all">Все типы</option>
+          <option disabled value=""></option>
+          {% for type in types.keys() %}
+            <option value='{{type}}'>{{type}}</option>
+          {% endfor %}
+        </select><br>
+      {% for type in types %}
+        {% for char in types[type].keys() %}
+          <div class="col-3 hide {{type}}">
+            {% if types[type][char] != 'int' %}
+              <label class="form-label">{{char}}</label>
+              <select class="form-select" id="{{char}}" onchange="func_card('{{char}}', 'param')">
+                <option selected disabled value="">Выбрать</option>
+                {% for ch in types[type][char] %}
+                  <option value='{{ch}}'>{{ch}}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <label class="form-label">{{char}}</label>
+              <input type="number" class="form-control" id="{{char}}" onchange="func_card('{{char}}', 'param')">
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endfor %}
+      </div>
+
+      <div class="col-4">
+        <input class="form-control" list="dataManufact" placeholder="Введите искомую фирму"
+              id="manufacture" onchange="func_card('manufacture', 'char')">
+        <datalist id="dataManufact">
+          {% for ch in chars['manufacture'] %}
+            <option value="{{ch}}">
+          {% endfor %}
+        </datalist><br>
+        <select class="form-select" id="level" onchange="func_card('level', 'char')">
+          <option selected disabled value="">Выберите уровень</option>
+          <option value="all">Все уровни</option>
+          <option disabled value=""></option>
+          {% for ch in chars['level'] %}
+            <option value='{{ch}}'>{{ch}}</option>
+          {% endfor %}
+        </select><br>
+          <select class="form-select" id="material" onchange="func_card('material', 'char')">
+            <option selected disabled value="">Выберите материал</option>
+            <option value="all">Все виды материалов</option>
+            <option disabled value=""></option>
+            {% for ch in chars['material'] %}
+              <option value='{{ch}}'>{{ch}}</option>
+            {% endfor %}
+          </select><br>
+          <select class="form-select" id="color" onchange="func_card('color', 'char')">
+            <option selected disabled value="">Выберите цвет</option>
+            <option value="all">Все цвета</option>
+            <option disabled value=""></option>
+            {% for ch in chars['color'] %}
+              <option value='{{ch}}'>{{ch}}</option>
+            {% endfor %}
+          </select><br>
+      </div>
+      <div class="col-4">
+        <div class="input-group">
+          <span class="input-group-text">Цена</span>
+          <input type="number" aria-label="От" class="form-control" placeholder="От"
+                 id="price_more" onchange="func_card('price_more', 'comp')">
+          <input type="number" aria-label="До" class="form-control" placeholder="До"
+                 id="price_less" onchange="func_card('price_less', 'comp')">
+        </div><br>
+        <div class="input-group">
+          <span class="input-group-text">Вес</span>
+          <input type="number" aria-label="От" class="form-control" placeholder="От"
+          id="weight_more" onchange="func_card('weight_more', 'comp')">
+          <input type="number" aria-label="До" class="form-control" placeholder="До"
+          id="weight_less" onchange="func_card('weight_less', 'comp')">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function func(value) {let x, i
+      x = document.getElementsByClassName("hide")
+      for (i = 0; i < x.length; i++) {RemoveClass(x[i])
+
+        if (x[i].className.indexOf(value) > -1 && x[i].className.indexOf("show") == -1) {
+          x[i].className += " show"}}
+      func_card('type', 'char')}
+
+    function RemoveClass(element) {let i, arr1
+        arr1 = element.className.split(" ")
+        while (arr1.indexOf("show") > -1) {arr1.splice(arr1.indexOf("show"), 1)}
+        element.className = arr1.join(" ")}
+
+    function togglePopup(id) {document.getElementById(id).classList.toggle('show')}
+
+    func_card('', '')
+    function func_card(filter, how) {let i, cards, req, cl_card, dict, when, prefil, what
+      if (filter) {prefil = JSON.parse(document.getElementById('filters').value.replaceAll('&#39;', '"'))
+        prefil[filter] = [document.getElementById(filter).value, how]
+        cards = document.getElementsByClassName('card_hide')
+        console.log(cards)
+        for (let filt of Object.keys(prefil)) {
+          for (i = 0; i < cards.length; i++) {dict = JSON.parse(cards[i].value.replaceAll('&#39;', '"'))
+
+            if (prefil[filt][1] == 'comp') {
+              if (filt.split('_')[1] == 'less') {when = parseInt(dict[filt.split('_')[0]]) <= parseInt(prefil[filt][0])} 
+              else {when = parseInt(dict[filt.split('_')[0]]) >= parseInt(prefil[filt][0])}
+            } else if (prefil[filt][1] == 'char') {when = dict[filt] == prefil[filt][0]
+            } else if (prefil[filt][1] == 'param') {when = dict['param'].includes(prefil[filt][0])}
+
+            if (prefil[filt][0] == 'all') {when = true}
+            if (when && !cards[i].className.includes('show')) {
+              cards[i].className += ' show'
+            } else if (!when && cards[i].className.includes('show')) {
+              cards[i].className = cards[i].className.replace(' show', '')}}}
+      } else {prefil = {}}
+      document.getElementById('filters').value = JSON.stringify(prefil)
+      
+      if (document.getElementsByClassName('show').length == 0 && !document.getElementById("no_details").className.includes("show_no")) {
+        document.getElementById("no_details").className += ' show_no'
+      } else if (!document.getElementsByClassName('show').length == 0 && document.getElementById("no_details").className.includes("show_no")) {
+        document.getElementById("no_details").className = document.getElementById("no_details").className.replace(' show_no', '')}}
+  </script>
+{% endblock %}
