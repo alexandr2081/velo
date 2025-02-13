@@ -52,12 +52,12 @@ def dets_bui(dets_id):
 @app.route('/index', methods=['GET', 'POST'])
 def index(dets_id=''):
     db_sess, chars, types, build_ = db_session.create_session(), get_js('chars'), get_js('types'), {'name': 'Сборка'}
-    db, det, message, dets = lambda que: [json.loads(str(i)) for i in que], None, '', ''
+    db, det, message, dets, filters = lambda que: [json.loads(str(i)) for i in que], None, '', '', '{}'
     build_['price'], build_['weight'], build_['details'] = 0, 0, {}
     details, build_ = db(db_sess.query(Detail).group_by(Detail.name)), dets_bui(dets_id)
-    filters = request.form.get('filters') if request.form.get('filters') else "{}"
 
     if request.method == 'POST':
+        filters = request.form.get('filters') if request.form.get('filters') else "{}"
         dets, build_ = {}, dets_bui(request.form.get('output'))
         if request.form['build_sub'] == 'new_build':
             tf = '\\' in request.form.get('build_name') or '.' in request.form.get('build_name')
