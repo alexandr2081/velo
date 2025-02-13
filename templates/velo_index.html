@@ -174,39 +174,37 @@
       x = document.getElementsByClassName("hide")
       for (i = 0; i < x.length; i++) {RemoveClass(x[i])
 
-        if (x[i].className.indexOf(value) > -1 && x[i].className.indexOf("show") == -1) {
-          x[i].className += " show"}}
+        if (x[i].className.indexOf(value) > -1 && x[i].className.indexOf("show_char") == -1) {
+          x[i].className += " show_char"}}
       func_card('type', 'char')}
 
     function RemoveClass(element) {let i, arr1
         arr1 = element.className.split(" ")
-        while (arr1.indexOf("show") > -1) {arr1.splice(arr1.indexOf("show"), 1)}
+        while (arr1.indexOf("show_char") > -1) {arr1.splice(arr1.indexOf("show_char"), 1)}
         element.className = arr1.join(" ")}
 
     func_card('', '', tf=false)
-    function func_card(filter, how, tf=true) {let i, cards, cl_card, dict, when, prefil
-      cards = document.getElementsByClassName('card_hide')
-      if (tf) {
-        prefil = JSON.parse(document.getElementById('filters').value.replaceAll('&#39;', '"'))
-        if (filter == 'type' && prefil[filter]) {if (prefil[filter][0] != document.getElementById(filter).value) {
-          for (let filt of Object.keys(prefil)) {if (prefil[filt][1] == 'param') {delete prefil[filt]}}}}
-        prefil[filter] = [document.getElementById(filter).value, how]
-        document.getElementById('filters').value = JSON.stringify(prefil)
-        console.log(prefil)
-        for (let filt of Object.keys(prefil)) {
-          for (i = 0; i < cards.length; i++) {dict = JSON.parse(cards[i].value.replaceAll('&#39;', '"'))
-            if (prefil[filt][1] == 'comp') {
-              if (filt.split('_')[1] == 'less') {when = parseInt(dict[filt.split('_')[0]]) <= parseInt(prefil[filt][0])} 
-              else {when = parseInt(dict[filt.split('_')[0]]) >= parseInt(prefil[filt][0])}
-            } else if (prefil[filt][1] == 'char') {when = dict[filt] == prefil[filt][0]
-            } else if (prefil[filt][1] == 'param') {when = dict['param'].includes(prefil[filt][0])}
+    function func_card(filter, how, tf=true) {let i, cards, dict, when, filters
+      [cards, filters] = [document.getElementsByClassName('card_hide'), {}]
+      if (tf) {filters = JSON.parse(document.getElementById('filters').value.replaceAll('&#39;', '"'))
+        if (filter == 'type' && filters[filter]) {if (filters[filter][0] != document.getElementById(filter).value) {
+          for (let filt of Object.keys(filters)) {if (filters[filt][1] == 'param') {delete filters[filt]}}}}
+          filters[filter] = [document.getElementById(filter).value, how]
+        if (filters[filter][0] == 'all' || filters[filter][0] == '') {delete filters[filter]}
+        document.getElementById('filters').value = JSON.stringify(filters)
 
-            if (prefil[filt][0] == 'all') {when = true}
-            if (when && !cards[i].className.includes('show')) {
-              cards[i].className += ' show'
-            } else if (!when && cards[i].className.includes('show')) {
-              cards[i].className = cards[i].className.replace(' show', '')}}}}
-      else {for (i = 0; i < cards.length; i++) {cards[i].className += ' show'}}
+        for (let filt of Object.keys(filters)) {
+          for (i = 0; i < cards.length; i++) {dict = JSON.parse(cards[i].value.replaceAll('&#39;', '"'))
+            if (filters[filt][1] == 'comp') {
+              if (filt.split('_')[1] == 'less') {when = parseInt(dict[filt.split('_')[0]]) <= parseInt(filters[filt][0])} 
+              else {when = parseInt(dict[filt.split('_')[0]]) >= parseInt(filters[filt][0])}
+            } else if (filters[filt][1] == 'char') {when = dict[filt] == filters[filt][0]
+            } else if (filters[filt][1] == 'param') {when = dict['param'].includes(filters[filt][0])}
+
+            if (when && !cards[i].className.includes('show')) {cards[i].className += ' show'
+            } else if (!when && cards[i].className.includes('show')) {cards[i].className = cards[i].className.replace(' show', '')}}}}
+      if (filters == {} || !tf) {for (i = 0; i < cards.length; i++) {
+        if (!cards[i].className.includes('show')) {cards[i].className += ' show'}}}
 
       if (document.getElementsByClassName('show').length == 0 && !document.getElementById("no_details").className.includes("show_no")) {
         document.getElementById("no_details").className += ' show_no'

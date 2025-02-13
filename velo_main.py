@@ -192,21 +192,21 @@ def new_det():
     else: return redirect(url_for('index'))
 
 
-@app.route('/up_det', methods=['GET', 'POST'])
-@login_required
-def up_det():
-    if 'admin' in current_user.name:
-        form = UpDetForm()
-        if form.validate_on_submit():
-            db_sess = db_session.create_session()
-            old_det = db_sess.query(Detail).where(Detail.name == form.name.data).first()
-            if old_det:
-                if not form.name.data:
-                    
-                    db_sess.commit()
-            else: return redirect(url_for('new_det'))
-        else: return render_template('up_det.html', title='Изменение детали', form=form)
-    else: return redirect(url_for('index'))
+##@app.route('/up_det', methods=['GET', 'POST'])
+##@login_required
+##def up_det():
+##    if 'admin' in current_user.name:
+##        form = UpDetForm()
+##        print(dir(form))
+##        if form.validate_on_submit():
+##            db_sess = db_session.create_session()
+##            old_det = db_sess.query(Detail).where(Detail.name == form.name.data).first()
+##            if old_det:
+##                print(dir(form))
+##                db_sess.commit()
+##            else: return redirect(url_for('new_det'))
+##        else: return render_template('up_det.html', title='Изменение детали', form=form)
+##    else: return redirect(url_for('index'))
     
 
 @app.route('/del_det', methods=['GET', 'POST'])

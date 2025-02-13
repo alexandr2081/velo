@@ -17,7 +17,7 @@
     <script>lol()</script-->
     <style>
       .hide, .card_hide, .card_hidden {display: none;}
-      .show, .show_no {display: block;}
+      .show, .show_no, .show_char {display: block;}
       
       .scroll_cards {
           margin: 20px auto;
@@ -105,7 +105,7 @@
               <li><a href="/about_us" class="nav-link px-2 text-white"><ya-tr-span data-index="64-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="About" data-translation="О нас" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">О нас</ya-tr-span></a></li>
               {% if current_user.is_authenticated and 'admin' in current_user.name %}
                 <li><a href="/new_det" class="nav-link px-2 text-white"><ya-tr-span data-index="63-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="FAQs" data-translation="Новая деталь" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">Новая деталь</ya-tr-span></a></li>
-                <li><a href="/up_det" class="nav-link px-2 text-white"><ya-tr-span data-index="63-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="FAQs" data-translation="Обновить деталь" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">Обновить деталь</ya-tr-span></a></li>
+                <!-- <li><a href="/up_det" class="nav-link px-2 text-white"><ya-tr-span data-index="63-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="FAQs" data-translation="Обновить деталь" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">Обновить деталь</ya-tr-span></a></li> -->
                 <li><a href="/del_det" class="nav-link px-2 text-white"><ya-tr-span data-index="63-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="FAQs" data-translation="Удалить деталь" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">Удалить деталь</ya-tr-span></a></li>
                 <li><a href="/chars_types" class="nav-link px-2 text-white"><ya-tr-span data-index="63-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="FAQs" data-translation="Работа с характеристиками" data-ch="1" data-type="trSpan" style="visibility: inherit !important;" data-selected="false">Характеристики</ya-tr-span></a></li>
               {% endif %}

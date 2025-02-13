@@ -53,30 +53,28 @@ class RegisterFormAdmin(FlaskForm):
             raise ValidationError('Пожалуйста, выберите другой адрес электронной почты')
 
 
-# class NewDetForm(FlaskForm):
-#     with open('./static/chars.json', 'r', encoding='utf-8') as ch, open('./static/types.json', 'r', encoding='utf-8') as ty:
-#         ch, ty = json.load(ch), json.load(ty)
-#     type = RadioField('Тип детали', validators=[DataRequired()], choices=ty.keys())
-#     material = RadioField('Материал изготовления', validators=[DataRequired()], choices=[i for i in ch['material'].keys()])
-#     manufacture = RadioField('Изготовитель', validators=[DataRequired()], choices=[i for i in ch['manufacture'].keys()])
-#     level = RadioField('Уровень детали', validators=[DataRequired()], choices=[i for i in ch['level'].keys()])
-#     color = RadioField('Цвет детали', validators=[DataRequired()], choices=ch['color'])
+class UpDetForm(FlaskForm):
+    with open('./static/chars.json', 'r', encoding='utf-8') as ch, open('./static/types.json', 'r', encoding='utf-8') as ty:
+        ch, ty = json.load(ch), json.load(ty)
+    name = StringField('Название детали')
+    type = RadioField('Тип детали', choices=ty.keys())
+    material = RadioField('Материал изготовления', choices=[i for i in ch['material'].keys()])
+    manufacture = RadioField('Изготовитель', choices=[i for i in ch['manufacture'].keys()])
+    level = RadioField('Уровень детали', choices=[i for i in ch['level'].keys()])
+    color = RadioField('Цвет детали', choices=ch['color'])
+    price = StringField('Цена детали')
+    descript = TextAreaField('Описание детали')
+    weight = StringField('Вес детали')
+    img = StringField('Ссылка на картинку детали')
+    img_velo = StringField('Ссылка на картинку наложения на велосипед')
+    available = StringField('Доступность (наличие на складе)')
+    submit = SubmitField('Изменить деталь')
 
-#     name = StringField('Название детали', validators=[DataRequired()])
-#     price = StringField('Цена детали', validators=[DataRequired()])
-#     descript = TextAreaField('Описание детали', validators=[DataRequired()])
-#     weight = StringField('Вес детали', validators=[DataRequired()])
-#     size = StringField('Размер детали (указывать в виде длина*ширина*высота)', validators=[DataRequired()])
-#     img = StringField('Ссылка на картинку детали', validators=[DataRequired()])
-#     img_velo = StringField('Ссылка на картинку наложения на велосипед', validators=[DataRequired()])
-#     available = StringField('Доступность (наличие на складе)', validators=[DataRequired()])
-#     submit = SubmitField('Создать деталь')
-
-#     def validate_name(self, name):
-#         db_sess = create_session()
-#         det = db_sess.scalar(sqlal.select(Detail).where(Detail.name == name.data))
-#         if det is not None:
-#             raise ValidationError('Пожалуйста, выберите другое имя детали')
+    def validate_name(self, name):
+        db_sess = create_session()
+        det = db_sess.scalar(sqlal.select(Detail).where(Detail.name == name.data))
+        if det == None:
+            raise ValidationError('Пожалуйста, проверьте имя детали - такой нету в базе данных')
 
 
 class DelDetForm(FlaskForm):
@@ -90,62 +88,14 @@ class DelDetForm(FlaskForm):
             raise ValidationError('Детали с таким именем нету в базе данных')
 
 
-class UpDetForm(FlaskForm):
-    name = StringField('Название детали', validators=[DataRequired()])
-    old_par = StringField('Название изменяемого параметра', validators=[DataRequired()])
-    new_par = StringField('Новый параметр', validators=[DataRequired()])
-    submit = SubmitField('Заменить параметр детали')
+# class UpDetForm(FlaskForm):
+#     name = StringField('Название детали', validators=[DataRequired()])
+#     old_par = StringField('Название изменяемого параметра', validators=[DataRequired()])
+#     new_par = StringField('Новый параметр', validators=[DataRequired()])
+#     submit = SubmitField('Заменить параметр детали')
 
-    def validate_name(self, name):
-        db_sess = create_session()
-        det = db_sess.scalar(sqlal.select(Detail).where(Detail.name == name.data))
-        if det == None:
-            raise ValidationError('Детали с таким именем нету в базе данных')
-        
-# class NewBuildForm(FlaskForm):
-#     if True:
-#         name = StringField('Название сборки', validators=[DataRequired()])
-#         frame = StringField('Название рамы')
-#         rear_shock_absorber = StringField('Название заднего амортизатора')
-#         fork = StringField('Название ')
-#         steering_column = StringField('Название ')
-#         steering_wheel_removal = StringField('Название ')
-#         handlebar = StringField('Название ')
-#         grieps = StringField('Название ')
-#         front_wheel = StringField('Название ')
-#         rear_wheel = StringField('Название ')
-#         front_tire = StringField('Название ')
-#         rear_tire = StringField('Название ')
-#         front_bushing = StringField('Название ')
-#         rear_bushing = StringField('Название ')
-#         chain = StringField('Название ')
-#         rear_stars = StringField('Название ')
-#         rear_speed_switch = StringField('Название ')
-#         front_speed_switch = StringField('Название ')
-#         rear_break = StringField('Название ')
-#         front_break = StringField('Название ')
-#         rear_break_disk = StringField('Название ')
-#         front_break_disk = StringField('Название ')
-#         bottom_bracket = StringField('Название ')
-#         front_stars = StringField('Название ')
-#         rod = StringField('Название ')
-#         pedals = StringField('Название ')
-#         saddle = StringField('Название ')
-#         seat = StringField('Название ')
-#         no_type_1 = StringField('Деталь без типа 1')
-#         no_type_2 = StringField('Деталь без типа 2')
-#         no_type_3 = StringField('Деталь без типа 3')
-#         submit = SubmitField('Создать сборку')
-
-#         def validate_details(self, frame, rear_shock_absorber, fork, steering_column, steering_wheel_removal, handlebar,
-#                              grieps, front_wheel, rear_wheel, front_tire, rear_tire, front_bushing, rear_bushing, chain,
-#                              rear_stars, rear_speed_switch, front_speed_switch, rear_break, front_break, rear_break_disk,
-#                              front_rear_disk, bottom_bracket, front_stars, rod, pedals, saddle, seat, no_type_1, no_type_2, no_type_3):
-#             db_sess = create_session()
-#             for i in [frame, rear_shock_absorber, fork, steering_column, steering_wheel_removal, handlebar, grieps,
-#                       front_wheel, rear_wheel, front_tire, rear_tire, front_bushing, rear_bushing, chain, rear_stars,
-#                       rear_speed_switch, front_speed_switch, rear_break, front_break, rear_break_disk, front_rear_disk,
-#                       bottom_bracket, front_stars, rod, pedals, saddle, seat, no_type_1, no_type_2, no_type_3]:
-#                 det = db_sess.scalar(sqlal.select(Detail).where(Detail.name == i.data))
-#                 if det == None:
-#                     raise ValidationError(f'Детали {i.data} нету в базе данных')
+#     def validate_name(self, name):
+#         db_sess = create_session()
+#         det = db_sess.scalar(sqlal.select(Detail).where(Detail.name == name.data))
+#         if det == None:
+#             raise ValidationError('Детали с таким именем нету в базе данных')
